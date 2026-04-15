@@ -6,7 +6,6 @@ public class main22 {
         Scanner sc = new Scanner(System.in);
         peminjamanService22 service = new peminjamanService22();
 
-        // ===== DATA =====
         mahasiswa22[] mhs = {
             new mahasiswa22("22001", "Andi", "Teknik Informatika"),
             new mahasiswa22("22002", "Budi", "Teknik Informatika"),
@@ -37,6 +36,9 @@ public class main22 {
             System.out.println("3. Tampilkan Peminjaman");
             System.out.println("4. Urutkan Berdasarkan Denda");
             System.out.println("5. Cari Berdasarkan NIM");
+            System.out.println("6. Tambah Data Peminjaman");
+            System.out.println("7. Statistik");
+            System.out.println("8. Laporan Per Mahasiswa");
             System.out.println("0. Keluar");
             System.out.print("Pilih: ");
             pilih = sc.nextInt();
@@ -55,21 +57,70 @@ public class main22 {
                     break;
 
                 case 4:
-                    service.urutkanDenda(pinjam);
-                    System.out.println("Setelah diurutkan:");
+                    System.out.println("=== Menggunakan Insertion Sort (Descending) ===");
+                    // service.urutkanDenda(pinjam);
+                    service.insertionSortByDendaDesc(pinjam);
+                    // System.out.println("Setelah diurutkan:");
                     service.tampilSemua(pinjam);
                     break;
 
                 case 5:
+                    // sc.nextLine();
+                    // System.out.print("Masukkan NIM: ");
+                    // String nim = sc.nextLine();
+                    // service.cariByNIM(pinjam, nim);
+                    // break;
+
                     sc.nextLine();
                     System.out.print("Masukkan NIM: ");
-                    String nim = sc.nextLine();
-                    service.cariByNIM(pinjam, nim);
+                    String nimCari = sc.nextLine();
+
+                    // service.urutkanByNIM(pinjam);
+                    // service.binarySearchByNIM(pinjam, nimCari);
+                    peminjaman22[] copy = service.copyArray(pinjam);
+                    service.insertionSortByNIMAsc(copy);
+                    service.binarySearchAllByNIM(copy, nimCari);
                     break;
+                
+                case 6:
+                    sc.nextLine();
+                    System.out.print("Masukkan NIM: ");
+                    String nimBaru = sc.nextLine();
+                    mahasiswa22 m = service.cariMahasiswa(mhs, nimBaru);
+                    if (m == null) {
+                        System.out.println("NIM tidak ditemukan!");
+                        break;
+                    }
+                    System.out.print("Masukkan Kode Buku: ");
+                    String kode = sc.nextLine();
+                    buku22 b = service.cariBuku(buku, kode);
+                    if (b == null) {
+                        System.out.println("Kode buku tidak ditemukan!");
+                        break;
+                    }
+                    System.out.print("Masukkan Lama Pinjam: ");
+                    int lama = sc.nextInt();
+                    peminjaman22 baru = new peminjaman22(m, b, lama);
+                    pinjam = service.tambahData(pinjam, baru);
+                    System.out.println("Data peminjaman berhasil ditambahkan!");
+                    break;
+
+                case 7:
+                    service.tampilStatistik(pinjam);
+                    break;
+
+                case 8:
+                    System.out.println("\n=== LAPORAN PER MAHASISWA ===");
+                    laporanMahasiswa22[] laporan = new laporanMahasiswa22[mhs.length];
+                    for (int i = 0; i < mhs.length; i++) {
+                        laporan[i] = new laporanMahasiswa22(mhs[i]); 
+                        laporan[i].hitungLaporan(pinjam);          
+                        laporan[i].tampilLaporan();                
+                    }
+
+                    break;
+                
             }
-
         } while (pilih != 0);
-
-        sc.close();
     }
 }
